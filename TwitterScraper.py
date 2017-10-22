@@ -242,24 +242,25 @@ class TwitterSlicer(TwitterSearch):
                 t = datetime.datetime.fromtimestamp((tweet['created_at']/1000))
                 fmt = "%Y-%m-%d %H:%M:%S"
                 log.info("%i [%s] - %s" % (self.counter, t.strftime(fmt), tweet['text']))
+                #log.info("%i [%s] - %s" % (self.counter, t.strftime(fmt), tweet))
 
         return True
 
 
 if __name__ == '__main__':
-    log.basicConfig(level=log.INFO)
+    log.basicConfig(level=log.INFO, filename='log.txt')
 
-    search_query = "Babylon 5"
+    search_query = "londonriot"
     rate_delay_seconds = 0
     error_delay_seconds = 5
 
     # Example of using TwitterSearch
-    twit = TwitterSearchImpl(rate_delay_seconds, error_delay_seconds, None)
-    twit.search(search_query)
+    #twit = TwitterSearchImpl(rate_delay_seconds, error_delay_seconds, None)
+    #twit.search(search_query)
 
     # Example of using TwitterSlice
-    select_tweets_since = datetime.datetime.strptime("2016-10-01", '%Y-%m-%d')
-    select_tweets_until = datetime.datetime.strptime("2016-12-01", '%Y-%m-%d')
+    select_tweets_since = datetime.datetime.strptime("2011-08-01", '%Y-%m-%d')
+    select_tweets_until = datetime.datetime.strptime("2011-08-30", '%Y-%m-%d')
     threads = 10
 
     twitSlice = TwitterSlicer(rate_delay_seconds, error_delay_seconds, select_tweets_since, select_tweets_until,
