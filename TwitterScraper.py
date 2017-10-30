@@ -1,3 +1,5 @@
+import csv
+import os
 import requests
 import json
 import datetime
@@ -10,7 +12,6 @@ from concurrent.futures import ThreadPoolExecutor
 import logging as log
 
 __author__ = 'Tom Dickinson'
-
 
 class TwitterSearch(metaclass=ABCMeta):
 
@@ -59,6 +60,7 @@ class TwitterSearch(metaclass=ABCMeta):
                 # Sleep for our rate_delay
                 sleep(self.rate_delay)
                 response = self.execute_search(url)
+
 
     def execute_search(self, url):
         """
@@ -196,7 +198,8 @@ class TwitterSearchImpl(TwitterSearch):
             if tweet['created_at'] is not None:
                 t = datetime.datetime.fromtimestamp((tweet['created_at']/1000))
                 fmt = "%Y-%m-%d %H:%M:%S"
-                log.info("%i [%s] - %s" % (self.counter, t.strftime(fmt), tweet['text']))
+                log.info("%i [%s], %s" % (self.counter, t.strftime(fmt), tweet['text']))
+
 
             # When we've reached our max limit, return False so collection stops
             if self.max_tweets is not None and self.counter >= self.max_tweets:
@@ -231,6 +234,7 @@ class TwitterSlicer(TwitterSearch):
         tp.shutdown(wait=True)
 
     def save_tweets(self, tweets):
+        print("#######################################################################################################")
         """
         Just prints out tweets
         :return: True always
@@ -241,9 +245,7 @@ class TwitterSlicer(TwitterSearch):
             if tweet['created_at'] is not None:
                 t = datetime.datetime.fromtimestamp((tweet['created_at']/1000))
                 fmt = "%Y-%m-%d %H:%M:%S"
-                log.info("%i [%s] - %s" % (self.counter, t.strftime(fmt), tweet['text']))
-                #log.info("%i [%s] - %s" % (self.counter, t.strftime(fmt), tweet))
-
+                log.info("%i-[%s],%s,%s,%s,%s,%s,%i,%i" % (self.counter, t.strftime(fmt), tweet['text'].replace(',','_'), tweet['tweet_id'], tweet['user_id'], tweet['user_name'], tweet['user_screen_name'], tweet['retweets'], tweet['favorites']))
         return True
 
 
@@ -267,5 +269,4 @@ if __name__ == '__main__':
                               threads)
     twitSlice.search(search_query)
 
-    print("TwitterSearch collected %i" % twit.counter)
     print("TwitterSlicer collected %i" % twitSlice.counter)

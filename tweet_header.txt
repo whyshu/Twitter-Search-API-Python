@@ -1,0 +1,1 @@
+Date, Tweet Text, Tweet Id, User Id, User Name, User Screen Name, Retweets, Favorites
